@@ -90,3 +90,6 @@ ENV/
 
 # pyc
 *.pyc
+
+# Node modules
+node_modules
