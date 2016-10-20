@@ -25,6 +25,10 @@ class Entry(db.Model):
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
+class NewPostPage(BlogHandler):
+    def get(self):
+        self.render('newpost.html')
+
 class MainPage(BlogHandler):
     def get(self):
         entries = db.GqlQuery('SELECT * FROM Entry ORDER BY created DESC')
@@ -32,5 +36,6 @@ class MainPage(BlogHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/blog/newpost', NewPostPage),
 ], debug=True)
 
