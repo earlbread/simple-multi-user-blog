@@ -4,13 +4,20 @@
 <section class="newpost">
   <h1 class="text-center text-uppercase">New post</h1>
 
+  {% if error %}
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
   <form action="/blog/newpost" method="post">
     <div class="form-group">
       <label for="subject">Subject</label>
-      <input type="text" id="subject" name="subject" class="form-control">
+      <input type="text" id="subject" name="subject" class="form-control"
+         value="{{ subject }}">
 
       <label for="content">Content</label>
-      <textarea class="form-control" rows="5" id="content" name="content"></textarea>
+      <textarea class="form-control" rows="5" id="content"
+         name="content">{{ content }}</textarea>
     </div>
 
     <button type="submit" class="btn btn-default">Submit</button>

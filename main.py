@@ -25,9 +25,34 @@ class Entry(db.Model):
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
+class EntryPage(BlogHandler):
+    def get(self, page_id):
+        entry = Entry.get_by_id(int(page_id))
+
+        if entry:
+            self.render("main.html", entries=[entry])
+        else:
+            self.redirect("/blog")
+
 class NewPostPage(BlogHandler):
+    def render_front(self, subject="", content="", error=""):
+        self.render('newpost.html', subject=subject, content=content,
+                    error=error)
+
     def get(self):
-        self.render('newpost.html')
+        self.render_front()
+
+    def post(self):
+        subject = self.request.get("subject")
+        content = self.request.get("content")
+
+        if subject and content:
+            b = Entry(subject=subject, content=content)
+            bput = b.put()
+            self.redirect("/blog/%s" % bput.id())
+        else:
+            error = "subject and content are needed"
+            self.render_front(subject, content, error)
 
 class MainPage(BlogHandler):
     def get(self):
@@ -35,7 +60,8 @@ class MainPage(BlogHandler):
         self.render('main.html', entries = entries)
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/blog', MainPage),
+    ('/blog/(\d+)', EntryPage),
     ('/blog/newpost', NewPostPage),
 ], debug=True)
 
