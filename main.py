@@ -28,7 +28,7 @@ class Entry(db.Model):
 class MainPage(BlogHandler):
     def get(self):
         entries = db.GqlQuery('SELECT * FROM Entry ORDER BY created DESC')
-        self.render('base.html', entries = entries)
+        self.render('main.html', entries = entries)
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
