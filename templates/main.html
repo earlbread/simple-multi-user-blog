@@ -2,20 +2,22 @@
 
 {% block content %}
 
-{% for entry in entries %}
-<article>
-  <div class="post-title">
-    <h2>{{entry.subject}}</h2>
-  </div>
-  <div class="post-date">
-    <h4>{{entry.created}}</h4>
-  </div>
-  <div class="post-content">
-    <p>
-      {{entry.content}}
-    </p>
-  </div>
-</article>
-{% endfor %}
+<section class="posts">
+  {% for entry in entries %}
+  <article>
+    <div class="post-title">
+      <h2><a href="/blog/{{ entry.id }}">{{ entry.subject }}</a></h2>
+    </div>
+    <div class="post-date">
+      <h4>{{entry.created}}</h4>
+    </div>
+    <div class="post-content">
+      <p>
+        {{entry.content}}
+      </p>
+    </div>
+  </article>
+  {% endfor %}
+</section>
 
 {% endblock %}
