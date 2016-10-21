@@ -67,3 +67,11 @@ footer a {
         padding: 15px;
     }
 }
+
+/* Signup */
+.signup .error {
+    display: inline;
+    color: red;
+    margin-bottom: 0;
+    padding-left: 15px;
+}

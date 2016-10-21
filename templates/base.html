@@ -23,8 +23,13 @@
       <header>
         <nav>
           <ul class="nav nav-pills pull-right text-uppercase">
-            <li><a href="#">Log in</a></li>
-            <li><a href="#">Sign up</a></li>
+            {% if user %}
+            <li><a href="/blog/newpost">New post</a></li>
+            <li><a href="/blog/logout">Log out</a></li>
+            {% else %}
+            <li><a href="/blog/login">Log in</a></li>
+            <li><a href="/blog/signup">Sign up</a></li>
+            {% endif %}
           </ul>
         </nav>
         <h1 class="title text-uppercase"><a href="/blog">Simple Blog</a></h1>

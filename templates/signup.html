@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="signup">
+  <h1>Sign up</h1>
+
+  {% if error %}
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+
+  <form action="/blog/signup" method="post">
+    <div class="form-group">
+      <label for="username">Name</label><p class="error">{{ error_username }}</p>
+      <input type="text" id="username" name="username" class="form-control" value="{{ username }}">
+
+      <label for="email">Email</label><p class="error">{{ error_email }}</p>
+      <input type="email" id="email" name="email" class="form-control" value="{{ email }}">
+
+      <label for="password">Password</label><p class="error">{{ error_password }}</p>
+      <input type="password" id="password" name="password" class="form-control">
+
+      <label for="verify">Password verify</label><p class="error">{{ error_verify }}</p>
+      <input type="password" id="verify" name="verify" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-default">Sign up</button>
+
+  </form>
+</section>
+{% endblock %}
