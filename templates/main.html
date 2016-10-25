@@ -6,7 +6,7 @@
   {% for entry in entries %}
   <article>
     <div class="post-title">
-      <h2><a href="/blog/{{ entry.id }}">{{ entry.subject }}</a></h2>
+      <h2><a href="/blog/{{ entry.key().id() }}">{{ entry.subject }}</a></h2>
     </div>
     <div class="post-date">
       <h4>{{entry.created}}</h4>
