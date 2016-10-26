@@ -15,6 +15,7 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
+
 secret = 'secret'
 
 def make_secure_val(val):
@@ -146,11 +147,11 @@ class Logout(BlogHandler):
         self.redirect('/blog')
 
 class PostPage(BlogHandler):
-    def get(self, page_id):
-        entry = Post.get_by_id(int(page_id))
+    def get(self, post_id):
+        post = Post.get_by_id(int(post_id))
 
-        if entry:
-            self.render('main.html', entries=[entry])
+        if post:
+            self.render('post.html', post=post)
         else:
             self.redirect('/blog')
 
@@ -180,8 +181,8 @@ class NewPostPage(BlogHandler):
 
 class MainPage(BlogHandler):
     def get(self):
-        entries = Post.all().order('-created')
-        self.render('main.html', entries = entries)
+        posts = Post.all().order('-created')
+        self.render('main.html', posts = posts)
 
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
