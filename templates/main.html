@@ -1,28 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="container post">
+<section class="container posts">
   {% for post in posts %}
-  <!-- Blog Entries Column -->
-  <div class="row">
-    <div class="col-md-12">
-      <h2 class="post-title">
-        <a href="/blog/{{ post.key().id() }}">{{ post.subject }}</a>
-      </h2>
-      <p class="lead">
-        by Author
-      </p>
-      <p>
-        <span class="glyphicon glyphicon-time"></span>
-        Posted on {{ post.created.strftime("%B %d, %Y at %-I:%-M %p") }}
-      </p>
-      <p>{{ post.content }}</p>
-
-      <hr>
-
-    </div>
-  </div>
-  <!-- /.row -->
+    {{ post.render() | safe}}
   {% endfor %}
 
   <div class="row">

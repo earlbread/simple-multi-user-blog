@@ -1,27 +1,20 @@
-{% extends "base.html" %}
+<!-- Blog Entries Column -->
+<div class="row">
+  <div class="col-md-12">
+    <h2 class="post-title">
+      <a href="/blog/{{ post.key().id() }}">{{ post.subject }}</a>
+    </h2>
+    <p class="lead">
+      by Author
+    </p>
+    <p>
+      <span class="glyphicon glyphicon-time"></span>
+      Posted on {{ post.created.strftime("%B %d, %Y at %-I:%-M %p") }}
+    </p>
+    <p>{{ post.content }}</p>
 
-{% block content %}
-<section class="container post">
-  <!-- Blog Entries Column -->
-  <div class="row">
-    <div class="col-md-12">
-      <h2 class="post-title">
-        <a href="/blog/{{ post.key().id() }}">{{ post.subject }}</a>
-      </h2>
-      <p class="lead">
-        by Author
-      </p>
-      <p>
-        <span class="glyphicon glyphicon-time"></span>
-        Posted on {{ post.created.strftime("%B %d, %Y at %-I:%-M %p") }}
-      </p>
-      <p>{{ post.content }}</p>
+    <hr>
 
-      <hr>
-
-    </div>
   </div>
-  <!-- /.row -->
-</section>
-<!-- /.container -->
-{% endblock %}
+</div>
+<!-- /.row -->

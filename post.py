@@ -1,6 +1,10 @@
 from google.appengine.ext import db
+import render
 
 class Post(db.Model):
     subject = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
+
+    def render(self):
+        return render.render_str('post.html', post=self)

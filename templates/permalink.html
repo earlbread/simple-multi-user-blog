@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="container post">
+  {{ post.render() | safe }}
+</section>
+<!-- /.container -->
+{% endblock %}

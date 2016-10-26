@@ -141,7 +141,7 @@ class PostPage(BlogHandler):
         post = Post.get_by_id(int(post_id))
 
         if post:
-            self.render('post.html', post=post)
+            self.render('permalink.html', post=post)
         else:
             self.redirect('/blog')
 
