@@ -1,20 +1,11 @@
-import os
 import re
 import hmac
 
 import webapp2
-import jinja2
-
-from google.appengine.ext import db
 
 from user import User
 from post import Post
-
-
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                               autoescape = True)
-
+import render
 
 secret = 'secret'
 
@@ -31,9 +22,8 @@ class BlogHandler(webapp2.RequestHandler):
         self.response.write(*a, **kw)
 
     def render_str(self, template, **params):
-        t = jinja_env.get_template(template)
         params['user'] = self.user
-        return t.render(params)
+        return render.render_str(template, **params)
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
