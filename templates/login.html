@@ -1,23 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="login">
-  {% if error %}
-  <div class="alert alert-danger" role="alert">
-    {{ error }}
-  </div>
-  {% endif %}
+<!-- Page Content -->
+<section class="container login">
 
-  <form action="/blog/login" method="post">
-    <div class="form-group">
-      <label for="username">Name</label>
-      <input type="text" id="username" name="username" class="form-control">
+  <div class="row">
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" class="form-control">
+    <div class="col-lg-2"></div>
+
+    <!-- Login content  -->
+    <div class="col-lg-8 login">
+
+      <!-- Title -->
+      <h1>Login</h1>
+
+      <!-- Error -->
+      {% if error %}
+      <div class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Login form -->
+      <form action="/blog/login" method="post" class="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Log in</button>
+        <p>Don't have an account? <a href="/blog/signup">Sign Up Now</a></p>
+      </form>
+      <!-- /form -->
     </div>
 
-    <button type="submit" class="btn btn-default">Log in</button>
-  </form>
+    <div class="col-lg-2"></div>
+
+  </div>
+  <!-- /.row -->
+
 </section>
+<!-- /.container -->
 {% endblock %}

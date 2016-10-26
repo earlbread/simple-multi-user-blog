@@ -55,11 +55,6 @@ nav {
 }
 
 /* Login, Sign up, New post */
-.login,
-.signup {
-    margin-top: 20px;
-}
-
 .login h1,
 .signup h1,
 .newpost h1 {

@@ -1,23 +1,44 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<section class="posts">
+<section class="container posts">
   {% for entry in entries %}
-  <article>
-    <div class="post-title">
-      <h2><a href="/blog/{{ entry.key().id() }}">{{ entry.subject }}</a></h2>
-    </div>
-    <div class="post-date">
-      <h4>{{entry.created}}</h4>
-    </div>
-    <div class="post-content">
-      <p>
-        {{entry.content}}
+  <!-- Blog Entries Column -->
+  <div class="row post">
+    <div class="col-md-12">
+      <h2 class="post-title">
+        <a href="/blog/{{ entry.key().id() }}">{{ entry.subject }}</a>
+      </h2>
+      <p class="lead">
+        by Author
       </p>
-    </div>
-  </article>
-  {% endfor %}
-</section>
+      <p>
+        <span class="glyphicon glyphicon-time"></span>
+        Posted on {{ entry.created.strftime("%B %d, %Y at %-I:%-M %p") }}
+      </p>
+      <p>{{ entry.content }}</p>
 
+      <hr>
+
+    </div>
+  </div>
+  <!-- /.row -->
+  {% endfor %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <!-- Pager -->
+      <ul class="pager">
+        <li class="previous">
+          <a href="#">Prev</a>
+        </li>
+        <li class="next">
+          <a href="#">Next</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</section>
+<!-- /.container -->
 {% endblock %}

@@ -197,6 +197,10 @@ class EntryPage(BlogHandler):
         else:
             self.redirect('/blog')
 
+class AboutPage(BlogHandler):
+    def get(self):
+        self.render('about.html')
+
 class NewPostPage(BlogHandler):
     def render_front(self, subject='', content='', error=''):
         self.render('newpost.html', subject=subject, content=content,
@@ -225,6 +229,7 @@ class MainPage(BlogHandler):
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
     ('/blog/(\d+)', EntryPage),
+    ('/blog/about', AboutPage),
     ('/blog/newpost', NewPostPage),
     ('/blog/signup', SignupPage),
     ('/blog/login', Login),
