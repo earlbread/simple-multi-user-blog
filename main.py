@@ -47,7 +47,10 @@ class BlogHandler(webapp2.RequestHandler):
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
-        self.user = uid and User.by_id(int(uid))
+        if uid:
+            self.user = User.by_id(int(uid))
+        else:
+            self.user = None
 
 USERNAME_RE = re.compile(r'^[a-zA-Z ]{3,20}$')
 def valid_username(username):
@@ -154,9 +157,15 @@ class NewPostPage(BlogHandler):
                     error=error)
 
     def get(self):
+        if self.user is None:
+            self.redirect('/blog/login')
+
         self.render_front()
 
     def post(self):
+        if self.user is None:
+            self.redirect('/blog/login')
+
         subject = self.request.get('subject')
         content = self.request.get('content')
 
