@@ -11,10 +11,14 @@
       <!-- Pager -->
       <ul class="pager">
         <li class="previous">
-          <a href="#">Prev</a>
+          {% if page != 1 %}
+          <a href="/blog?page={{ page - 1 }}">Prev</a>
+          {% endif %}
         </li>
         <li class="next">
-          <a href="#">Next</a>
+          {% if page != total_page %}
+          <a href="/blog?page={{ page + 1}}">Next</a>
+          {% endif %}
         </li>
       </ul>
     </div>

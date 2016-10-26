@@ -179,8 +179,25 @@ class NewPostPage(BlogHandler):
 
 class MainPage(BlogHandler):
     def get(self):
+        per_page = 5
+        page = self.request.get('page')
+
+        if page:
+            page = int(page)
+        else:
+            page = 1
+
         posts = Post.all().order('-created')
-        self.render('main.html', posts = posts)
+        nr_posts = posts.count()
+        total_page = nr_posts / per_page
+
+        if nr_posts % per_page:
+            total_page += 1
+
+        posts = posts.fetch(limit = per_page, offset = page - 1)
+
+        self.render('main.html', posts = posts, page = page,
+                total_page = total_page)
 
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
