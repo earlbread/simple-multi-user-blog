@@ -1,14 +1,14 @@
 import os
 import re
-import random
-import hashlib
 import hmac
-from string import letters
 
 import webapp2
 import jinja2
 
 from google.appengine.ext import db
+
+from user import User
+from post import Post
 
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -58,43 +58,6 @@ class BlogHandler(webapp2.RequestHandler):
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
 
-
-def make_salt(length = 5):
-    return ''.join(random.choice(letters) for x in xrange(length))
-
-def make_pw_hash(name, pw, salt = None):
-    if salt is None:
-        salt = make_salt()
-
-    h = hashlib.sha256(name + pw + salt).hexdigest()
-    return '%s,%s' % (salt, h)
-
-def valid_pw(name, password, h):
-    salt = h.split(',')[0]
-    return h == make_pw_hash(name, password, salt)
-
-class User(db.Model):
-    username = db.StringProperty(required = True)
-    email = db.StringProperty(required = True)
-    password = db.StringProperty(required = True)
-
-    @classmethod
-    def by_id(cls, uid):
-        return User.get_by_id(uid)
-
-    @classmethod
-    def by_name(cls, name):
-        u = User.all().filter('username =', name).get()
-        return u
-
-    @classmethod
-    def login(cls, name, pw):
-        u = cls.by_name(name)
-        print u
-        if u and valid_pw(name, pw, u.password):
-            return u
-
-
 USERNAME_RE = re.compile(r'^[a-zA-Z ]{3,20}$')
 def valid_username(username):
     return username and USERNAME_RE.match(username)
@@ -105,16 +68,16 @@ def valid_password(password):
 
 EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 def valid_email(email):
-    return email and EMAIL_RE.match(email)
+    return not email or EMAIL_RE.match(email)
 
 class SignupPage(BlogHandler):
     def render_front(self, username='', email='',
-                     password='', verify='', error=''):
+                     password='', confirmation='', error=''):
         self.render('signup.html',
                     username = username,
                     email = email,
                     password = password,
-                    verify = verify,
+                    confirmation = confirmation,
                     error = error)
     def get(self):
         self.render_front()
@@ -123,7 +86,7 @@ class SignupPage(BlogHandler):
         username = self.request.get('username')
         email = self.request.get('email')
         password = self.request.get('password')
-        verify = self.request.get('verify')
+        confirmation = self.request.get('confirmation')
 
         params = dict(username = username, email = email)
         has_error = False
@@ -132,9 +95,9 @@ class SignupPage(BlogHandler):
             has_error = True
             params['error_username'] = "That's not a valid username."
         else:
-            u = db.GqlQuery("SELECT * FROM User WHERE username = '%s'"
-                    % username)
-            if u.count() > 0:
+            u = User.by_name(username)
+
+            if u:
                 has_error = True
                 params['error_username'] = 'That username already exists.'
 
@@ -145,15 +108,15 @@ class SignupPage(BlogHandler):
         if not valid_password(password):
             has_error = True
             params['error_password'] = "That's not a valid password"
-        elif password != verify:
+        elif password != confirmation:
             has_error = True
-            params['error_verify'] = "Your password didn't match."
+            params['error_confirmation'] = "Your password didn't match."
 
         if has_error:
+            print params
             self.render("signup.html", **params)
         else:
-            pw = make_pw_hash(username, password)
-            u = User(username = username, password = pw, email = email)
+            u = User.register(username, password, email)
             u.put()
 
             self.login(u)
@@ -182,15 +145,9 @@ class Logout(BlogHandler):
         self.logout()
         self.redirect('/blog')
 
-
-class Entry(db.Model):
-    subject = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True)
-
-class EntryPage(BlogHandler):
+class PostPage(BlogHandler):
     def get(self, page_id):
-        entry = Entry.get_by_id(int(page_id))
+        entry = Post.get_by_id(int(page_id))
 
         if entry:
             self.render('main.html', entries=[entry])
@@ -214,21 +171,21 @@ class NewPostPage(BlogHandler):
         content = self.request.get('content')
 
         if subject and content:
-            b = Entry(subject=subject, content=content)
+            b = Post(subject=subject, content=content)
             bput = b.put()
             self.redirect('/blog/%s' % bput.id())
         else:
-            error = 'subject and content are needed'
+            error = 'Subject and Content are needed'
             self.render_front(subject, content, error)
 
 class MainPage(BlogHandler):
     def get(self):
-        entries = db.GqlQuery('SELECT * FROM Entry ORDER BY created DESC')
+        entries = Post.all().order('-created')
         self.render('main.html', entries = entries)
 
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
-    ('/blog/(\d+)', EntryPage),
+    ('/blog/(\d+)', PostPage),
     ('/blog/about', AboutPage),
     ('/blog/newpost', NewPostPage),
     ('/blog/signup', SignupPage),
