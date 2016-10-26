@@ -61,17 +61,39 @@ EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 def valid_email(email):
     return not email or EMAIL_RE.match(email)
 
+def validate_userinfo(username, password, confirmation, email):
+    params = dict(username = username, email = email)
+    has_error = False
+
+    if not valid_username(username):
+        has_error = True
+        params['error_username'] = "That's not a valid username."
+    else:
+        u = User.by_name(username)
+
+        if u:
+            has_error = True
+            params['error_username'] = 'That username already exists.'
+
+
+    if not valid_email(email):
+        has_error = True
+        params['error_email'] = "That's not a valid email."
+    if not valid_password(password):
+        has_error = True
+        params['error_password'] = "That's not a valid password"
+    elif password != confirmation:
+        has_error = True
+        params['error_confirmation'] = "Your password didn't match."
+
+    params['has_error'] = has_error
+
+    return params
+
+
 class SignupPage(BlogHandler):
-    def render_front(self, username='', email='',
-                     password='', confirmation='', error=''):
-        self.render('signup.html',
-                    username = username,
-                    email = email,
-                    password = password,
-                    confirmation = confirmation,
-                    error = error)
     def get(self):
-        self.render_front()
+        self.render('signup.html')
 
     def post(self):
         username = self.request.get('username')
@@ -79,33 +101,10 @@ class SignupPage(BlogHandler):
         password = self.request.get('password')
         confirmation = self.request.get('confirmation')
 
-        params = dict(username = username, email = email)
-        has_error = False
+        params = validate_userinfo(username, password, confirmation, email)
 
-        if not valid_username(username):
-            has_error = True
-            params['error_username'] = "That's not a valid username."
-        else:
-            u = User.by_name(username)
-
-            if u:
-                has_error = True
-                params['error_username'] = 'That username already exists.'
-
-
-        if not valid_email(email):
-            has_error = True
-            params['error_email'] = "That's not a valid email."
-        if not valid_password(password):
-            has_error = True
-            params['error_password'] = "That's not a valid password"
-        elif password != confirmation:
-            has_error = True
-            params['error_confirmation'] = "Your password didn't match."
-
-        if has_error:
-            print params
-            self.render("signup.html", **params)
+        if params['has_error']:
+            self.render('signup.html', **params)
         else:
             u = User.register(username, password, email)
             u.put()
