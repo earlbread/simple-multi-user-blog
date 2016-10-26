@@ -170,7 +170,7 @@ class NewPostPage(BlogHandler):
         content = self.request.get('content')
 
         if subject and content:
-            b = Post(subject=subject, content=content)
+            b = Post(user = self.user, subject=subject, content=content)
             bput = b.put()
             self.redirect('/blog/%s' % bput.id())
         else:

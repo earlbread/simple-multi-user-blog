@@ -5,7 +5,7 @@
       <a href="/blog/{{ post.key().id() }}">{{ post.subject }}</a>
     </h2>
     <p class="lead">
-      by Author
+      by {{ post.user.username }}
     </p>
     <p>
       <span class="glyphicon glyphicon-time"></span>
