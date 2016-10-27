@@ -1,5 +1,6 @@
 import re
 import hmac
+import time
 
 import webapp2
 
@@ -177,6 +178,18 @@ class NewPostPage(BlogHandler):
             error = 'Subject and Content are needed'
             self.render_front(subject, content, error)
 
+class DeletePostPage(BlogHandler):
+    def post(self, post_id):
+        if self.user is None:
+            self.redirect('/blog/login')
+        post = Post.get_by_id(int(post_id))
+
+        if post:
+            post.delete()
+            time.sleep(0.1)
+
+        self.redirect('/blog')
+
 class MainPage(BlogHandler):
     def get(self):
         per_page = 5
@@ -204,6 +217,7 @@ app = webapp2.WSGIApplication([
     ('/blog/(\d+)', PostPage),
     ('/blog/about', AboutPage),
     ('/blog/newpost', NewPostPage),
+    ('/blog/delete_post/(\d+)', DeletePostPage),
     ('/blog/signup', SignupPage),
     ('/blog/login', Login),
     ('/blog/logout', Logout),

@@ -1,6 +1,7 @@
 <!-- Blog Entries Column -->
-<div class="row">
+<div class="row post">
   <div class="col-md-12">
+    <form action="/blog/delete_post/{{ post.key().id() }}" method="post">
     <h2 class="post-title">
       <a href="/blog/{{ post.key().id() }}">{{ post.subject }}</a>
     </h2>
@@ -10,11 +11,13 @@
     <p>
       <span class="glyphicon glyphicon-time"></span>
       Posted on {{ post.created.strftime("%B %d, %Y at %-I:%-M %p") }}
+        <button type="submit" class="btn btn-link">Delete</button>
     </p>
     <p>{{ post.content }}</p>
 
     <hr>
 
+      </form>
   </div>
 </div>
 <!-- /.row -->

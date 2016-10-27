@@ -2,3 +2,7 @@
 .signup .error {
     color: #a94442;
 }
+
+.post button {
+    display: inline;
+}
