@@ -1,25 +1,26 @@
 <!-- Blog Entries Column -->
 <div class="row post">
   <div class="col-md-12">
-    <form action="/blog/delete_post/{{ post.key().id() }}" method="post">
       <h2 class="post-title">
         <a href="/blog/{{ post.key().id() }}">{{ post.subject }}</a>
       </h2>
       <p class="lead">
         by {{ post.user.username }}
       </p>
-      <p>
+      <p class="post-date">
         <span class="glyphicon glyphicon-time"></span>
         Posted on {{ post.created.strftime("%B %d, %Y at %-I:%-M %p") }}
-        {% if user.key().id() == post.user.key().id() %}
-        <button type="submit" class="btn btn-link">Delete</button>
+        {% if user and (user.key().id() == post.user.key().id()) %}
+        <a href="/blog/edit_post/{{ post.key().id() }}" class="btn btn-link">Edit</a>
+        <form action="/blog/delete_post/{{ post.key().id() }}" method="post">
+          <button type="submit" class="btn btn-link">Delete</button>
+        </form>
         {% endif %}
       </p>
       <p>{{ post.content }}</p>
 
       <hr>
 
-    </form>
   </div>
 </div>
 <!-- /.row -->

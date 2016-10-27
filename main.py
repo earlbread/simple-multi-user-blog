@@ -171,12 +171,51 @@ class NewPostPage(BlogHandler):
         content = self.request.get('content')
 
         if subject and content:
-            b = Post(user = self.user, subject=subject, content=content)
-            bput = b.put()
-            self.redirect('/blog/%s' % bput.id())
+            post = Post(user = self.user, subject=subject, content=content)
+            post.put()
+            self.redirect('/blog/%s' % post.key().id())
         else:
             error = 'Subject and Content are needed'
             self.render_front(subject, content, error)
+
+class EditPostPage(BlogHandler):
+    def get(self, post_id):
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        post = Post.get_by_id(int(post_id))
+
+        if post and self.user.key().id() == post.user.key().id():
+            self.render('editpost.html', subject=post.subject,
+                        content=post.content, error='', post=post)
+        else:
+            self.redirect('/blog')
+
+    def post(self, post_id):
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        post = Post.get_by_id(int(post_id))
+
+        subject = self.request.get('subject')
+        content = self.request.get('content')
+
+        if post and self.user.key().id() == post.user.key().id():
+            print dir(post)
+
+        if subject and content:
+            post.subject = subject
+            post.content = content
+            post.put()
+            self.redirect('/blog/%s' % post.key().id())
+        else:
+            error = 'Subject and Content are needed'
+            self.render('editpost.html', subject=post.subject,
+                        content=post.content, error=error , post=post)
+
+
+        self.redirect('/blog')
+
 
 class DeletePostPage(BlogHandler):
     def post(self, post_id):
@@ -216,7 +255,8 @@ app = webapp2.WSGIApplication([
     ('/blog', MainPage),
     ('/blog/(\d+)', PostPage),
     ('/blog/about', AboutPage),
-    ('/blog/newpost', NewPostPage),
+    ('/blog/new_post', NewPostPage),
+    ('/blog/edit_post/(\d+)', EditPostPage),
     ('/blog/delete_post/(\d+)', DeletePostPage),
     ('/blog/signup', SignupPage),
     ('/blog/login', Login),

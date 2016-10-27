@@ -3,6 +3,11 @@
     color: #a94442;
 }
 
-.post button {
+/* Post */
+.post-date {
+    display: inline;
+}
+
+.post form {
     display: inline;
 }

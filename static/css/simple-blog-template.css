@@ -57,14 +57,14 @@ nav {
 /* Login, Sign up, New post */
 .login h1,
 .signup h1,
-.newpost h1 {
+.write-post h1 {
     margin-bottom: 20px;
     text-align: center;
 }
 
 .login .form-control,
 .signup .form-control,
-.newpost .form-control {
+.write-post .form-control {
     border-radius: 0;
 }
 
@@ -79,6 +79,6 @@ nav {
     font-weight: normal;
 }
 
-.newpost textarea {
+.write-post textarea {
     max-width: 100%;
 }

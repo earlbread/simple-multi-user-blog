@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Content -->
+<section class="container write-post">
+
+  <div class="row">
+
+    <!-- Newpost content  -->
+    <div class="col-lg-12">
+
+      <!-- Title -->
+      <h1>{% block write_title %}{% endblock %}</h1>
+
+      <!-- Error -->
+      {% if error %}
+      <div class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Writepost form -->
+      <form action="/blog/{% block action_url %}{% endblock %}"
+            method="post" class="writepost-form">
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" class="form-control"
+                 value="{{ subject }}">
+        </div>
+
+        <div class="form-group">
+          <label for="content">Content</label>
+          <textarea rows="5" id="content" name="content"
+                    class="form-control">{{ content }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Post</button>
+      </form>
+      <!-- /form -->
+    </div>
+
+  </div>
+  <!-- /.row -->
+
+</section>
+<!-- /.container -->
+{% endblock %}

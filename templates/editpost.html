@@ -1,9 +1,9 @@
 {% extends 'writepost.html' %}
 
 {% block write_title %}
-New post
+Edit post
 {% endblock %}
 
 {% block action_url %}
-new_post
+edit_post/{{ post.key().id() }}
 {% endblock %}
