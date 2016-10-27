@@ -16,7 +16,7 @@
           {% endif %}
         </li>
         <li class="next">
-          {% if page != total_page %}
+          {% if page != total_page and total_page != 0 %}
           <a href="/blog?page={{ page + 1}}">Next</a>
           {% endif %}
         </li>
