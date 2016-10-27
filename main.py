@@ -180,11 +180,11 @@ class NewPostPage(BlogHandler):
 
 class DeletePostPage(BlogHandler):
     def post(self, post_id):
-        if self.user is None:
+        if self.user is None :
             self.redirect('/blog/login')
         post = Post.get_by_id(int(post_id))
 
-        if post:
+        if post and self.user.key().id() == post.user.key().id():
             post.delete()
             time.sleep(0.1)
 

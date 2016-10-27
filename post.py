@@ -8,5 +8,5 @@ class Post(db.Model):
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
-    def render(self):
-        return render.render_str('post.html', post=self)
+    def render(self, user):
+        return render.render_str('post.html', post=self, user=user)

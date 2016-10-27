@@ -11,7 +11,9 @@
     <p>
       <span class="glyphicon glyphicon-time"></span>
       Posted on {{ post.created.strftime("%B %d, %Y at %-I:%-M %p") }}
-        <button type="submit" class="btn btn-link">Delete</button>
+      {% if user.key().id() == post.user.key().id() %}
+      <button type="submit" class="btn btn-link">Delete</button>
+      {% endif %}
     </p>
     <p>{{ post.content }}</p>
 

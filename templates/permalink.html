@@ -2,7 +2,7 @@
 
 {% block content %}
 <section class="container">
-  {{ post.render() | safe }}
+  {{ post.render(user) | safe }}
 </section>
 <!-- /.container -->
 {% endblock %}

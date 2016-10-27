@@ -3,7 +3,7 @@
 {% block content %}
 <section class="container posts">
   {% for post in posts %}
-    {{ post.render() | safe}}
+    {{ post.render(user) | safe}}
   {% endfor %}
 
   {% if total_page == 0 %}
