@@ -207,6 +207,7 @@ class EditPostPage(BlogHandler):
             post.subject = subject
             post.content = content
             post.put()
+            time.sleep(0.1)
             self.redirect('/blog/%s' % post.key().id())
         else:
             error = 'Subject and Content are needed'

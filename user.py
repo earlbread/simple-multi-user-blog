@@ -1,51 +1,76 @@
-from google.appengine.ext import db
-
+"""This module models user information for blog.
+"""
 import hashlib
 import random
 from string import letters
 
-def make_salt(length = 5):
+from google.appengine.ext import db
+
+def make_salt(length=5):
+    """Make salt for hashed password.
+
+    Args:
+        length (int): Length of salt.
+
+    Returns:
+        str: Random salt string.
+    """
     return ''.join(random.choice(letters) for x in xrange(length))
 
-def make_pw_hash(name, pw, salt = None):
+def make_password_hash(username, password, salt=None):
+    """Make hashed password.
+
+    If salt is given, use the salt for making hashed password.
+    If not, make new random salt.
+
+    Args:
+        username
+    """
     if salt is None:
         salt = make_salt()
 
-    h = hashlib.sha256(name + pw + salt).hexdigest()
-    return '%s,%s' % (salt, h)
+    hashed_password = hashlib.sha256(username + password + salt).hexdigest()
+    return '%s,%s' % (salt, hashed_password)
 
-def check_pw(name, password, h):
-    salt = h.split(',')[0]
-    return h == make_pw_hash(name, password, salt)
-
-def users_key(group = 'default'):
-    return db.Key.from_path('users', group)
+def check_password(username, password, hashed_password):
+    """Dummy
+    """
+    salt = hashed_password.split(',')[0]
+    return hashed_password == make_password_hash(username, password, salt)
 
 class User(db.Model):
-    username = db.StringProperty(required = True)
+    """Dummy
+    """
+    username = db.StringProperty(required=True)
     email = db.StringProperty()
-    password = db.StringProperty(required = True)
+    password = db.StringProperty(required=True)
 
     @classmethod
     def by_id(cls, uid):
-        return User.get_by_id(uid, parent = users_key())
+        """Dummy
+        """
+        return User.get_by_id(uid)
 
     @classmethod
-    def by_name(cls, name):
-        u = User.all().filter('username =', name).get()
-        return u
+    def by_name(cls, username):
+        """Dummy
+        """
+        user = User.all().filter('username =', username).get()
+        return user
 
     @classmethod
-    def register(cls, name, pw, email):
-        pw = make_pw_hash(name, pw)
-        return User(parent = users_key(),
-                    username = name,
-                    password = pw,
-                    email = email)
+    def register(cls, username, password, email):
+        """Dummy
+        """
+        password = make_password_hash(username, password)
+        return User(username=username,
+                    password=password,
+                    email=email)
 
     @classmethod
-    def login(cls, name, pw):
-        u = cls.by_name(name)
-        print u
-        if u and check_pw(name, pw, u.password):
-            return u
+    def login(cls, username, password):
+        """Dummy
+        """
+        user = cls.by_name(username)
+        if user and check_password(username, password, user.password):
+            return user
