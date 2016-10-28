@@ -29,4 +29,7 @@ class Post(db.Model):
         Returns:
             str: Rendered html string.
         """
+        # This is needed to render post properly.
+        self._render_text = self.content.replace('\n', '<br>')
+
         return render.render_str('post.html', post=self, user=user)

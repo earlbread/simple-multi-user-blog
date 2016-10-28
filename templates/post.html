@@ -17,7 +17,7 @@
         </form>
         {% endif %}
       </p>
-      <p>{{ post.content }}</p>
+      <p>{{ post._render_text | safe }}</p>
 
       <hr>
 
