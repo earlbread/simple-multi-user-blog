@@ -14,7 +14,7 @@ def render_str(template, **params):
 
     Args:
         template (str): Template name to render.
-        **params: Arbitrary parameters for render.
+        **params: Arbitrary parameters to render.
 
     Returns:
         str: Rendered html string.

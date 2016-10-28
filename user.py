@@ -24,7 +24,12 @@ def make_password_hash(username, password, salt=None):
     If not, make new random salt.
 
     Args:
-        username
+        username (str): User's name.
+        password (str): User's password.
+        salt (str): The salt of password already hashed.
+
+    Returns:
+        str: Salt with hashed password seperated by comma.
     """
     if salt is None:
         salt = make_salt()
@@ -33,34 +38,69 @@ def make_password_hash(username, password, salt=None):
     return '%s,%s' % (salt, hashed_password)
 
 def check_password(username, password, hashed_password):
-    """Dummy
+    """Check if it's the same password with hashed_password.
+
+    Args:
+        username (str): User's name for checking.
+        password (str): User's password for checking.
+        hashed_password (str): Hashed password stored in database.
+
+    Returns:
+        bool: True if password correct, False otherwise.
     """
     salt = hashed_password.split(',')[0]
     return hashed_password == make_password_hash(username, password, salt)
 
 class User(db.Model):
-    """Dummy
+    """DB model for User Entity.
+
+    This class models blog's user information.
+
+    Attributes:
+        username (str): User's name.
+        password (str): User's password.
+        email (str): User's email address.
     """
     username = db.StringProperty(required=True)
-    email = db.StringProperty()
     password = db.StringProperty(required=True)
+    email = db.StringProperty()
 
     @classmethod
     def by_id(cls, uid):
-        """Dummy
+        """Find user by id and return User instance.
+
+        Args:
+            uid (int): User's id for finding.
+
+        Returns:
+            User instance if it exists, None otherwise.
         """
         return User.get_by_id(uid)
 
     @classmethod
     def by_name(cls, username):
-        """Dummy
+        """Find user by name and return User instance.
+
+        Args:
+            username (str): User's name for finding.
+
+        Returns:
+            User instance if it exists, None otherwise.
         """
         user = User.all().filter('username =', username).get()
         return user
 
     @classmethod
     def register(cls, username, password, email):
-        """Dummy
+        """Make hashed password and User instance using given information.
+
+        Args:
+            username (str): User's name.
+            password (str): User's password.
+            email (str): User's email address.
+
+        Returns:
+            User instance.
         """
         password = make_password_hash(username, password)
         return User(username=username,
@@ -69,7 +109,14 @@ class User(db.Model):
 
     @classmethod
     def login(cls, username, password):
-        """Dummy
+        """Find user by name and return it if password is correct.
+
+        Args:
+            username (str): User name for logging in.
+            password (str): Password for logging in.
+
+        Retruns:
+            User instance if login is successful, None otherwise.
         """
         user = cls.by_name(username)
         if user and check_password(username, password, user.password):
