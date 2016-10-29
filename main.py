@@ -438,8 +438,6 @@ class NewCommentPage(BlogHandler):
             except ValueError:
                 self.redirect('/blog')
 
-        print post, post_id, content
-
         if content:
             comment = Comment(user=self.user, post=post, content=content)
             comment.put()
@@ -451,6 +449,30 @@ class NewCommentPage(BlogHandler):
         else:
             error = 'Comment is needed'
             self.render('permalink.html', post=post, error=error)
+
+class DeleteCommentPage(BlogHandler):
+    """Delete comment page handler
+    """
+    def post(self, comment_id):
+        """Delete comment if given post_id exists.
+
+        If logged out user attempt to access, redirect to login page.
+
+        Args:
+            comment_id (str): Comment's id to edit.
+        """
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        comment = Comment.get_by_id(int(comment_id))
+
+        if comment and self.user.key().id() == comment.user.key().id():
+            comment.delete()
+
+            # Delay for DB processing.
+            time.sleep(0.1)
+
+        self.redirect('/blog/%s' % comment.post.key().id())
 
 
 class MainPage(BlogHandler):
@@ -488,6 +510,7 @@ app = webapp2.WSGIApplication([
     ('/blog/edit_post/(\d+)', EditPostPage),
     ('/blog/delete_post/(\d+)', DeletePostPage),
     ('/blog/new_comment', NewCommentPage),
+    ('/blog/delete_comment/(\d+)', DeleteCommentPage),
     ('/blog/signup', RegisterPage),
     ('/blog/login', Login),
     ('/blog/logout', Logout),
