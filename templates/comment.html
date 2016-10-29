@@ -16,10 +16,10 @@
     </p>
     <div id="comment-edit-{{ comment.key().id() }}" class="comment-edit-form">
       <form action="/blog/edit_comment/{{ comment.key().id() }}" method="post">
-        <textarea class="form-control" name="content-{{ comment.key().id() }}">{{ comment._render_text | safe }}</textarea>
+        <textarea class="form-control" name="content-{{ comment.key().id() }}">{{ comment.content | safe }}</textarea>
         <button id="{{ comment.key().id() }}" type="button"
                 class="btn btn-link btn-cancel-comment">Cancel</button>
-        <button type="submit" class="btn btn-link">Post</button>
+        <button type="submit" class="btn btn-link">Submit</button>
       </form>
     </div>
   </div>
