@@ -5,11 +5,22 @@
       <small>{{ comment.created.strftime("%B %d, %Y at %-I:%M %p") }}</small>
     </h4>
     {% if user and (user.key().id() == comment.user.key().id()) %}
-    <a href="/blog/edit_comment/{{ comment.key().id() }}" class="btn btn-link">Edit</a>
+    <button id="{{ comment.key().id() }}" type="button"
+            class="btn btn-link btn-edit-comment">Edit</button>
     <form action="/blog/delete_comment/{{ comment.key().id() }}" method="post">
       <button type="submit" class="btn btn-link btn-delete">Delete</button>
     </form>
     {% endif %}
-    <p>{{ comment._render_text | safe }}</p>
+    <p class="comment-content-{{ comment.key().id() }}">
+      {{ comment._render_text | safe }}
+    </p>
+    <div id="comment-edit-{{ comment.key().id() }}" class="comment-edit-form">
+      <form action="/blog/edit_comment/{{ comment.key().id() }}" method="post">
+        <textarea class="form-control" name="content-{{ comment.key().id() }}">{{ comment._render_text | safe }}</textarea>
+        <button id="{{ comment.key().id() }}" type="button"
+                class="btn btn-link btn-cancel-comment">Cancel</button>
+        <button type="submit" class="btn btn-link">Post</button>
+      </form>
+    </div>
   </div>
 </div>
