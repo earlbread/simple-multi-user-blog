@@ -13,7 +13,7 @@
         {% if user and (user.key().id() == post.user.key().id()) %}
         <a href="/blog/edit_post/{{ post.key().id() }}" class="btn btn-link">Edit</a>
         <form action="/blog/delete_post/{{ post.key().id() }}" method="post">
-          <button type="submit" class="btn btn-link">Delete</button>
+          <button type="submit" class="btn btn-link btn-delete">Delete</button>
         </form>
         {% endif %}
       </p>
