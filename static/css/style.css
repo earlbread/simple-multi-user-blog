@@ -11,3 +11,7 @@
 .post form {
     display: inline;
 }
+
+.post-content {
+    margin-top: 10px;
+}
