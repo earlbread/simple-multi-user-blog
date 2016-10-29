@@ -15,7 +15,7 @@ class Post(db.Model):
         content (text): Content of the post.
         created (datetime): Created time of the post.
     """
-    user = db.ReferenceProperty(User, required=True)
+    user = db.ReferenceProperty(User, collection_name='posts', required=True)
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
@@ -24,7 +24,7 @@ class Post(db.Model):
         """Renders the post itself.
 
         Args:
-            user (User): user instance for rendering post.
+            user (User): User instance logged in.
 
         Returns:
             str: Rendered html string.

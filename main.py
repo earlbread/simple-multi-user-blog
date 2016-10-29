@@ -8,6 +8,7 @@ import webapp2
 
 from user import User
 from post import Post
+from comment import Comment
 import render
 
 SECRET = 'secret'
