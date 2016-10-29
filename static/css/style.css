@@ -1,14 +1,19 @@
 /* Signup */
-.signup .error {
+.error {
     color: #a94442;
 }
 
-/* Post */
+/* Post and Comment */
 .post-date {
     display: inline;
 }
 
-.post form {
+.post form,
+.comment form {
+    display: inline;
+}
+
+.commenter {
     display: inline;
 }
 

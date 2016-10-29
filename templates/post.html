@@ -9,7 +9,7 @@
       </p>
       <p class="post-date">
         <span class="glyphicon glyphicon-time"></span>
-        Posted on {{ post.created.strftime("%B %d, %Y at %-I:%-M %p") }}
+        Posted on {{ post.created.strftime("%B %d, %Y at %-I:%M %p") }}
         {% if user and (user.key().id() == post.user.key().id()) %}
         <a href="/blog/edit_post/{{ post.key().id() }}" class="btn btn-link">Edit</a>
         <form action="/blog/delete_post/{{ post.key().id() }}" method="post">

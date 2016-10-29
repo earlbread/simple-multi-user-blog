@@ -325,9 +325,10 @@ class NewPostPage(BlogHandler):
         if subject and content:
             post = Post(user=self.user, subject=subject, content=content)
 
+            post.put()
+
             # Delay for DB processing.
             time.sleep(0.1)
-            post.put()
 
             self.redirect('/blog/%s' % post.key().id())
         else:
@@ -417,6 +418,41 @@ class DeletePostPage(BlogHandler):
 
         self.redirect('/blog')
 
+class NewCommentPage(BlogHandler):
+    """New comment page handler
+    """
+    def post(self):
+        """Check if content is not empty and register it.
+
+        If content is empty, render post page with error.
+        """
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        content = self.request.get('content')
+        post_id = self.request.get('post_id')
+
+        if post_id:
+            try:
+                post = Post.get_by_id(int(post_id))
+            except ValueError:
+                self.redirect('/blog')
+
+        print post, post_id, content
+
+        if content:
+            comment = Comment(user=self.user, post=post, content=content)
+            comment.put()
+
+            # Delay for DB processing.
+            time.sleep(0.1)
+
+            self.redirect('/blog/%s' % post.key().id())
+        else:
+            error = 'Comment is needed'
+            self.render('permalink.html', post=post, error=error)
+
+
 class MainPage(BlogHandler):
     """Blog main page handler.
     """
@@ -451,6 +487,7 @@ app = webapp2.WSGIApplication([
     ('/blog/new_post', NewPostPage),
     ('/blog/edit_post/(\d+)', EditPostPage),
     ('/blog/delete_post/(\d+)', DeletePostPage),
+    ('/blog/new_comment', NewCommentPage),
     ('/blog/signup', RegisterPage),
     ('/blog/login', Login),
     ('/blog/logout', Logout),

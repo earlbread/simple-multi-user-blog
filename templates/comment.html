@@ -1,11 +1,15 @@
 <!-- Comment -->
 <div class="media">
-  <div class="media-body">
-    <h4 class="media-heading">{{ comment.user.username }}
-      <small>{{ comment.created.strftime("%B %d, %Y at %-I:%-M %p") }}</small>
+  <div class="media-body comment">
+    <h4 class="media-heading commenter">{{ comment.user.username }}
+      <small>{{ comment.created.strftime("%B %d, %Y at %-I:%M %p") }}</small>
     </h4>
-    {{ comment._render_text | safe }}
+    {% if user and (user.key().id() == comment.user.key().id()) %}
+    <a href="/blog/edit_comment/{{ comment.key().id() }}" class="btn btn-link">Edit</a>
+    <form action="/blog/delete_comment/{{ comment.key().id() }}" method="post">
+      <button type="submit" class="btn btn-link btn-delete">Delete</button>
+    </form>
+    {% endif %}
+    <p>{{ comment._render_text | safe }}</p>
   </div>
 </div>
-
-
