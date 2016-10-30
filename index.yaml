@@ -15,3 +15,15 @@ indexes:
   - name: post
   - name: created
     direction: desc
+
+- kind: Post
+  properties:
+  - name: user
+  - name: created
+    direction: desc
+
+- kind: Post
+  properties:
+  - name: username
+  - name: created
+    direction: desc

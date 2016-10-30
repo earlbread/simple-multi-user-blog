@@ -508,6 +508,36 @@ class DeleteCommentPage(BlogHandler):
 
         self.redirect('/blog/%s' % comment.post.key().id())
 
+class MyPostPage(BlogHandler):
+    """My post page handler.
+    """
+    def get(self):
+        """Get logged in user posts from DB and render it.
+        """
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        per_page = 5
+        page = self.request.get('page')
+
+        if page:
+            page = int(page)
+        else:
+            page = 1
+
+        post_all = Post.all().order('-created')
+        my_posts = post_all.filter('user =', self.user)
+        nr_posts = my_posts.count()
+        total_page = nr_posts / per_page
+
+        if nr_posts % per_page:
+            total_page += 1
+
+        posts = my_posts.fetch(limit=per_page, offset=page - 1)
+
+        self.render('main.html', posts=posts, page=page,
+                    total_page=total_page)
+
 
 class MainPage(BlogHandler):
     """Blog main page handler.
@@ -546,6 +576,7 @@ app = webapp2.WSGIApplication([
     ('/blog/new_comment', NewCommentPage),
     ('/blog/edit_comment/(\d+)', EditCommentPage),
     ('/blog/delete_comment/(\d+)', DeleteCommentPage),
+    ('/blog/my_post', MyPostPage),
     ('/blog/signup', RegisterPage),
     ('/blog/login', Login),
     ('/blog/logout', Logout),
