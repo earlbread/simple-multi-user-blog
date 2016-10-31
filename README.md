@@ -22,3 +22,19 @@ You can change secret key for cookie value by setting SECRET environment variabl
 [1]: https://www.python.org/downloads/
 [2]: https://cloud.google.com/appengine/docs/python/download
 
+## Used skills
+
+### Languages
+
+ - HTML / CSS
+ - Javascript
+ - Python
+
+### Frameworks
+ - [Bootstrap][3]
+ - [Google App Engine][4]
+ - [Simple Blog Template][5]
+
+[3]: http://getbootstrap.com/
+[4]: https://cloud.google.com/appengine/docs
+[5]: https://github.com/earlbread/simple-blog-template
