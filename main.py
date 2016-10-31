@@ -77,7 +77,7 @@ class BlogHandler(webapp2.RequestHandler):
         """
         self.write(self.render_str(template, **kw))
 
-    def set_secure_cookie(self, name, val):
+    def set_secure_cookie(self, name, val, remember):
         """Make secure cookie and set it to the browser.
 
         Args:
@@ -85,9 +85,13 @@ class BlogHandler(webapp2.RequestHandler):
             val (str): Cookie value to set.
         """
         cookie_val = make_secure_val(val)
-        self.response.headers.add_header(
-            'Set-Cookie',
-            '%s=%s; Path=/' % (name, cookie_val))
+        cookie_str = '%s=%s; Path=/;' % (name, cookie_val)
+
+        if remember:
+            expires_date = 'expires=Fri, 31 Dec 9999 23:59:59 GMT;'
+            cookie_str += expires_date
+
+        self.response.headers.add_header('Set-Cookie', cookie_str)
 
     def read_secure_cookie(self, name):
         """Read cookie from the browser and check validity.
@@ -101,13 +105,13 @@ class BlogHandler(webapp2.RequestHandler):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
-    def login(self, user):
+    def login(self, user, remember=False):
         """Set 'user_id' cookie to login.
 
         Args:
             user (User): user instance to login.
         """
-        self.set_secure_cookie('user_id', str(user.key().id()))
+        self.set_secure_cookie('user_id', str(user.key().id()), remember)
 
     def logout(self):
         """Remove cookie to log out.
@@ -257,11 +261,14 @@ class LoginPage(BlogHandler):
         """
         username = self.request.get('username')
         password = self.request.get('password')
+        remember = self.request.get('remember')
 
         user = User.login(username, password)
 
+        remember = True if remember else False
+
         if user:
-            self.login(user)
+            self.login(user, remember)
             return self.redirect('/blog')
         else:
             msg = 'Invalid username or password'
