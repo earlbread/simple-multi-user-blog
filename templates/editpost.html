@@ -7,3 +7,7 @@ Edit post
 {% block action_url %}
 edit_post/{{ post.key().id() }}
 {% endblock %}
+
+{% block cancel_edit %}
+<a href="/blog/{{ post.key().id() }}" class="btn btn-link">Cancel</a>
+{% endblock %}
