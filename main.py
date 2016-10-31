@@ -124,6 +124,16 @@ class BlogHandler(webapp2.RequestHandler):
         else:
             self.user = None
 
+
+class AboutPage(BlogHandler):
+    """About page handler.
+    """
+    def get(self):
+        """Render about page.
+        """
+        self.render('about.html')
+
+
 USERNAME_RE = re.compile(r'^[a-zA-Z ]{3,20}$')
 def valid_username(username):
     """Check validity of username.
@@ -257,6 +267,7 @@ class LoginPage(BlogHandler):
             msg = 'Invalid username or password'
             self.render('login.html', error=msg)
 
+
 class LogoutPage(BlogHandler):
     """User logout handler.
     """
@@ -266,29 +277,6 @@ class LogoutPage(BlogHandler):
         self.logout()
         return self.redirect('/blog')
 
-class PostPage(BlogHandler):
-    """Post handler.
-    """
-    def get(self, post_id):
-        """Get post with given post_id and render it.
-
-        Args:
-            post_id (str): Post's id to render.
-        """
-        post = Post.get_by_id(int(post_id))
-
-        if post:
-            self.render('permalink.html', post=post)
-        else:
-            return self.redirect('/blog')
-
-class AboutPage(BlogHandler):
-    """About page handler.
-    """
-    def get(self):
-        """Render about page.
-        """
-        self.render('about.html')
 
 class NewPostPage(BlogHandler):
     """New post page handler.
@@ -336,6 +324,7 @@ class NewPostPage(BlogHandler):
         else:
             error = 'Subject and Content are needed'
             self.render_front(subject, content, error)
+
 
 class EditPostPage(BlogHandler):
     """Edit post page handler.
@@ -421,6 +410,7 @@ class DeletePostPage(BlogHandler):
             time.sleep(0.1)
 
         return self.redirect('/blog')
+
 
 class NewCommentPage(BlogHandler):
     """New comment page handler
@@ -512,65 +502,6 @@ class DeleteCommentPage(BlogHandler):
 
         return self.redirect('/blog/%s' % comment.post.key().id())
 
-class LikePostPage(BlogHandler):
-    """My post page handler.
-    """
-    def get(self):
-        """Get logged in user posts from DB and render it.
-        """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
-        per_page = 5
-        page = self.request.get('page')
-
-        if page:
-            page = int(page)
-        else:
-            page = 1
-
-        likes = self.user.likes
-        nr_posts = likes.count()
-        total_page = nr_posts / per_page
-
-        if nr_posts % per_page:
-            total_page += 1
-
-        posts = [l.post for l in likes.fetch(limit=per_page, offset=page - 1)]
-
-        self.render('postlist.html', posts=posts, page=page,
-                    total_page=total_page)
-
-class MyPostPage(BlogHandler):
-    """My post page handler.
-    """
-    def get(self):
-        """Get logged in user posts from DB and render it.
-        """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
-        per_page = 5
-        page = self.request.get('page')
-
-        if page:
-            page = int(page)
-        else:
-            page = 1
-
-        post_all = Post.all().order('-created')
-        my_posts = post_all.filter('user =', self.user)
-        nr_posts = my_posts.count()
-        total_page = nr_posts / per_page
-
-        if nr_posts % per_page:
-            total_page += 1
-
-        posts = my_posts.fetch(limit=per_page, offset=page - 1)
-
-        self.render('postlist.html', posts=posts, page=page,
-                    total_page=total_page)
-
 
 class LikePage(BlogHandler):
     """ Blog like page handler.
@@ -627,6 +558,85 @@ class UnlikePage(BlogHandler):
         return self.redirect('/blog/%s' % post.key().id())
 
 
+class PostPage(BlogHandler):
+    """Post handler.
+    """
+    def get(self, post_id):
+        """Get post with given post_id and render it.
+
+        Args:
+            post_id (str): Post's id to render.
+        """
+        post = Post.get_by_id(int(post_id))
+
+        if post:
+            self.render('permalink.html', post=post)
+        else:
+            return self.redirect('/blog')
+
+
+
+class LikePostListPage(BlogHandler):
+    """My post page handler.
+    """
+    def get(self):
+        """Get logged in user posts from DB and render it.
+        """
+        if self.user is None:
+            return self.redirect('/blog/login')
+
+        per_page = 5
+        page = self.request.get('page')
+
+        if page:
+            page = int(page)
+        else:
+            page = 1
+
+        likes = self.user.likes
+        nr_posts = likes.count()
+        total_page = nr_posts / per_page
+
+        if nr_posts % per_page:
+            total_page += 1
+
+        posts = [l.post for l in likes.fetch(limit=per_page, offset=page - 1)]
+
+        self.render('postlist.html', posts=posts, page=page,
+                    total_page=total_page)
+
+
+class MyPostListPage(BlogHandler):
+    """My post page handler.
+    """
+    def get(self):
+        """Get logged in user posts from DB and render it.
+        """
+        if self.user is None:
+            return self.redirect('/blog/login')
+
+        per_page = 5
+        page = self.request.get('page')
+
+        if page:
+            page = int(page)
+        else:
+            page = 1
+
+        post_all = Post.all().order('-created')
+        my_posts = post_all.filter('user =', self.user)
+        nr_posts = my_posts.count()
+        total_page = nr_posts / per_page
+
+        if nr_posts % per_page:
+            total_page += 1
+
+        posts = my_posts.fetch(limit=per_page, offset=page - 1)
+
+        self.render('postlist.html', posts=posts, page=page,
+                    total_page=total_page)
+
+
 class MainPage(BlogHandler):
     """Blog main page handler.
     """
@@ -655,20 +665,20 @@ class MainPage(BlogHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/blog', MainPage),
-    ('/blog/(\d+)', PostPage),
-    ('/blog/about', AboutPage),
-    ('/blog/new_post', NewPostPage),
-    ('/blog/edit_post/(\d+)', EditPostPage),
-    ('/blog/delete_post/(\d+)', DeletePostPage),
-    ('/blog/new_comment', NewCommentPage),
-    ('/blog/edit_comment/(\d+)', EditCommentPage),
-    ('/blog/delete_comment/(\d+)', DeleteCommentPage),
-    ('/blog/my_post', MyPostPage),
-    ('/blog/like_post', LikePostPage),
-    ('/blog/like/(\d+)', LikePage),
-    ('/blog/unlike/(\d+)', UnlikePage),
-    ('/blog/signup', RegisterPage),
-    ('/blog/login', LoginPage),
-    ('/blog/logout', LogoutPage),
+    ('/blog/about/?', AboutPage),
+    ('/blog/signup/?', RegisterPage),
+    ('/blog/login/?', LoginPage),
+    ('/blog/logout/?', LogoutPage),
+    ('/blog/new_post/?', NewPostPage),
+    ('/blog/edit_post/(\d+)/?', EditPostPage),
+    ('/blog/delete_post/(\d+)/?', DeletePostPage),
+    ('/blog/new_comment/?', NewCommentPage),
+    ('/blog/edit_comment/(\d+)/?', EditCommentPage),
+    ('/blog/delete_comment/(\d+)/?', DeleteCommentPage),
+    ('/blog/like/(\d+)/?', LikePage),
+    ('/blog/unlike/(\d+)/?', UnlikePage),
+    ('/blog/(\d+)/?', PostPage),
+    ('/blog/like_post/?', LikePostListPage),
+    ('/blog/my_post/?', MyPostListPage),
+    ('/blog/?', MainPage),
 ], debug=True)
