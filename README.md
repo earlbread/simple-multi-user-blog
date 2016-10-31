@@ -15,6 +15,10 @@ If you've already installed them, clone the repo and run the project using dev_a
     $ cd simple-multi-user-blog
     $ dev_appserver.py .
 
+You can change secret key for cookie value by setting SECRET environment variable.
+
+    $ export SECRET='secret'
+
 [1]: https://www.python.org/downloads/
 [2]: https://cloud.google.com/appengine/docs/python/download
 

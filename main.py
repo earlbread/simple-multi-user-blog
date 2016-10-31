@@ -1,5 +1,6 @@
 """Main module for blog application.
 """
+import os
 import re
 import hmac
 import time
@@ -13,7 +14,10 @@ from comment import Comment
 from like import Like
 import render
 
-SECRET = 'secret'
+if os.environ.has_key('SECRET'):
+    SECRET = os.environ['SECRET']
+else:
+    SECRET = 'secret'
 
 def make_secure_val(val):
     """Make hashed value for secure
