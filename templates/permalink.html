@@ -10,6 +10,7 @@
   <!-- Blog Comments -->
 
   <!-- Comments Form -->
+  {% if user %}
   <div class="well">
     <h4>Leave a Comment:</h4>
     <div class="error"><p>{{ error }}</p></div>
@@ -23,6 +24,7 @@
   </div>
 
   <hr>
+  {% endif %}
 
   <!-- Posted Comments -->
 
