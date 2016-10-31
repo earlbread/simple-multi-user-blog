@@ -234,7 +234,7 @@ class RegisterPage(BlogHandler):
             return self.redirect('/blog')
 
 
-class Login(BlogHandler):
+class LoginPage(BlogHandler):
     """User login handler.
     """
     def get(self):
@@ -257,7 +257,7 @@ class Login(BlogHandler):
             msg = 'Invalid username or password'
             self.render('login.html', error=msg)
 
-class Logout(BlogHandler):
+class LogoutPage(BlogHandler):
     """User logout handler.
     """
     def get(self):
@@ -669,6 +669,6 @@ app = webapp2.WSGIApplication([
     ('/blog/like/(\d+)', LikePage),
     ('/blog/unlike/(\d+)', UnlikePage),
     ('/blog/signup', RegisterPage),
-    ('/blog/login', Login),
-    ('/blog/logout', Logout),
+    ('/blog/login', LoginPage),
+    ('/blog/logout', LogoutPage),
 ], debug=True)
