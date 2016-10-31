@@ -662,6 +662,11 @@ class MainPage(BlogHandler):
                     total_page=total_page)
 
 
+class PageNotFoundHandler(webapp2.RequestHandler):
+    def get(self):
+        self.redirect('/blog')
+
+
 app = webapp2.WSGIApplication([
     ('/blog/signup/?', RegisterPage),
     ('/blog/login/?', LoginPage),
@@ -678,4 +683,5 @@ app = webapp2.WSGIApplication([
     ('/blog/like_post/?', LikePostListPage),
     ('/blog/my_post/?', MyPostListPage),
     ('/blog/?', MainPage),
+    ('/.*', PageNotFoundHandler),
 ], debug=True)
