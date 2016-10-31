@@ -5,10 +5,12 @@ import hmac
 import time
 
 import webapp2
+from google.appengine.ext import db
 
 from user import User
 from post import Post
 from comment import Comment
+from like import Like
 import render
 
 SECRET = 'secret'
@@ -413,6 +415,8 @@ class DeletePostPage(BlogHandler):
         if post and self.user.key().id() == post.user.key().id():
             post.delete()
 
+            db.delete(Like.all().filter('post = ', post))
+
             # Delay for DB processing.
             time.sleep(0.1)
 
@@ -508,6 +512,35 @@ class DeleteCommentPage(BlogHandler):
 
         self.redirect('/blog/%s' % comment.post.key().id())
 
+class LikePostPage(BlogHandler):
+    """My post page handler.
+    """
+    def get(self):
+        """Get logged in user posts from DB and render it.
+        """
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        per_page = 5
+        page = self.request.get('page')
+
+        if page:
+            page = int(page)
+        else:
+            page = 1
+
+        likes = self.user.likes
+        nr_posts = likes.count()
+        total_page = nr_posts / per_page
+
+        if nr_posts % per_page:
+            total_page += 1
+
+        posts = [l.post for l in likes.fetch(limit=per_page, offset=page - 1)]
+
+        self.render('main.html', posts=posts, page=page,
+                    total_page=total_page)
+
 class MyPostPage(BlogHandler):
     """My post page handler.
     """
@@ -537,6 +570,61 @@ class MyPostPage(BlogHandler):
 
         self.render('main.html', posts=posts, page=page,
                     total_page=total_page)
+
+
+class LikePage(BlogHandler):
+    """ Blog like page handler.
+    """
+    def post(self, post_id):
+        """Like post.
+
+        Args:
+            post_id (str): Post's id to like.
+        """
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        post = Post.get_by_id(int(post_id))
+
+        if not(post and self.user.key().id() != post.user.key().id()):
+            self.redirect('/blog')
+
+        if self.user.likes.filter('post = ', post).get():
+            self.redirect('/blog/%s' % post.key().id())
+
+        Like(user=self.user, post=post).put()
+
+        # Delay for DB processing.
+        time.sleep(0.1)
+
+        self.redirect('/blog/%s' % post.key().id())
+
+class UnlikePage(BlogHandler):
+    """ Blog unlike page handler.
+    """
+    def post(self, post_id):
+        """Unlike post.
+
+        Args:
+            post_id (str): Post's id to unlike.
+        """
+        if self.user is None:
+            self.redirect('/blog/login')
+
+        post = Post.get_by_id(int(post_id))
+
+        if not(post and self.user.key().id() != post.user.key().id()):
+            self.redirect('/blog')
+
+        like = self.user.likes.filter('post = ', post).get()
+
+        if like:
+            like.delete()
+
+            # Delay for DB processing.
+            time.sleep(0.1)
+
+        self.redirect('/blog/%s' % post.key().id())
 
 
 class MainPage(BlogHandler):
@@ -577,6 +665,9 @@ app = webapp2.WSGIApplication([
     ('/blog/edit_comment/(\d+)', EditCommentPage),
     ('/blog/delete_comment/(\d+)', DeleteCommentPage),
     ('/blog/my_post', MyPostPage),
+    ('/blog/like_post', LikePostPage),
+    ('/blog/like/(\d+)', LikePage),
+    ('/blog/unlike/(\d+)', UnlikePage),
     ('/blog/signup', RegisterPage),
     ('/blog/login', Login),
     ('/blog/logout', Logout),

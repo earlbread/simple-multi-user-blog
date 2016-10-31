@@ -8,6 +8,10 @@
     display: inline;
 }
 
+.post-control .btn:first-child {
+    padding-left: 0;
+}
+
 .post form,
 .comment form {
     display: inline;
@@ -18,7 +22,7 @@
 }
 
 .post-content {
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .comment {

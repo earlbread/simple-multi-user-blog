@@ -9,15 +9,34 @@
       </p>
       <p class="post-date">
         <span class="glyphicon glyphicon-time"></span>
-        Posted on {{ post.created.strftime("%B %d, %Y at %-I:%M %p") }}
-        {% if user and (user.key().id() == post.user.key().id()) %}
-        <a href="/blog/edit_post/{{ post.key().id() }}" class="btn btn-link">Edit</a>
-        <form action="/blog/delete_post/{{ post.key().id() }}" method="post">
-          <button type="submit" class="btn btn-link btn-delete">Delete</button>
-        </form>
-        {% endif %}
-      </p>
-      <p class="post-content">{{ post._render_text | safe }}</p>
+        {{ post.created.strftime("%B %d, %Y at %-I:%M %p") }}
+     </p>
+     <div class="post-control">
+       {% if not user or (user.key().id() != post.user.key().id()) %}
+         {% if user and user.likes.filter('post = ', post).get() %}
+         <form action="/blog/unlike/{{ post.key().id() }}" method="post">
+           <button type="submit" class="btn btn-link btn-like">
+             <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+             Unlike
+           </button>
+         </form>
+         {% else %}
+         <form action="/blog/like/{{ post.key().id() }}" method="post">
+           <button type="submit" class="btn btn-link btn-like">
+             <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+             Like
+           </button>
+         </form>
+         {% endif %}
+       {% endif %}
+       {% if user and (user.key().id() == post.user.key().id()) %}
+       <a href="/blog/edit_post/{{ post.key().id() }}" class="btn btn-link">Edit</a>
+       <form action="/blog/delete_post/{{ post.key().id() }}" method="post">
+         <button type="submit" class="btn btn-link btn-delete">Delete</button>
+       </form>
+       {% endif %}
+     </div>
+     <p class="post-content">{{ post._render_text | safe }}</p>
 
       <hr>
 
