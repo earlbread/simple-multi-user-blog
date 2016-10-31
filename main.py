@@ -231,7 +231,7 @@ class RegisterPage(BlogHandler):
             user.put()
 
             self.login(user)
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
 
 class Login(BlogHandler):
@@ -252,7 +252,7 @@ class Login(BlogHandler):
 
         if user:
             self.login(user)
-            self.redirect('/blog')
+            return self.redirect('/blog')
         else:
             msg = 'Invalid username or password'
             self.render('login.html', error=msg)
@@ -264,7 +264,7 @@ class Logout(BlogHandler):
         """Do logout.
         """
         self.logout()
-        self.redirect('/blog')
+        return self.redirect('/blog')
 
 class PostPage(BlogHandler):
     """Post handler.
@@ -280,7 +280,7 @@ class PostPage(BlogHandler):
         if post:
             self.render('permalink.html', post=post)
         else:
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
 class AboutPage(BlogHandler):
     """About page handler.
@@ -309,7 +309,7 @@ class NewPostPage(BlogHandler):
         If logged out user attempt to access, redirect to login page.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         self.render_front()
 
@@ -319,7 +319,7 @@ class NewPostPage(BlogHandler):
         If subject or content is empty, render new post page with error.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         subject = self.request.get('subject')
         content = self.request.get('content')
@@ -332,7 +332,7 @@ class NewPostPage(BlogHandler):
             # Delay for DB processing.
             time.sleep(0.1)
 
-            self.redirect('/blog/%s' % post.key().id())
+            return self.redirect('/blog/%s' % post.key().id())
         else:
             error = 'Subject and Content are needed'
             self.render_front(subject, content, error)
@@ -349,7 +349,7 @@ class EditPostPage(BlogHandler):
             post_id (str): Post's id.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         post = Post.get_by_id(int(post_id))
 
@@ -357,7 +357,7 @@ class EditPostPage(BlogHandler):
             self.render('editpost.html', subject=post.subject,
                         content=post.content, error='', post=post)
         else:
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
     def post(self, post_id):
         """Check if subject and content are not empty and register it.
@@ -369,12 +369,12 @@ class EditPostPage(BlogHandler):
             post_id (str): Post's id to edit.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         post = Post.get_by_id(int(post_id))
 
         if not(post and self.user.key().id() == post.user.key().id()):
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
         subject = self.request.get('subject')
         content = self.request.get('content')
@@ -387,14 +387,14 @@ class EditPostPage(BlogHandler):
             # Delay for DB processing.
             time.sleep(0.1)
 
-            self.redirect('/blog/%s' % post.key().id())
+            return self.redirect('/blog/%s' % post.key().id())
         else:
             error = 'Subject and Content are needed'
             self.render('editpost.html', subject=post.subject,
                         content=post.content, error=error, post=post)
 
 
-        self.redirect('/blog')
+        return self.redirect('/blog')
 
 
 class DeletePostPage(BlogHandler):
@@ -409,7 +409,7 @@ class DeletePostPage(BlogHandler):
             post_id (str): Post's id to edit.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
         post = Post.get_by_id(int(post_id))
 
         if post and self.user.key().id() == post.user.key().id():
@@ -420,7 +420,7 @@ class DeletePostPage(BlogHandler):
             # Delay for DB processing.
             time.sleep(0.1)
 
-        self.redirect('/blog')
+        return self.redirect('/blog')
 
 class NewCommentPage(BlogHandler):
     """New comment page handler
@@ -431,7 +431,7 @@ class NewCommentPage(BlogHandler):
         If content is empty, render post page with error.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         content = self.request.get('content')
         post_id = self.request.get('post_id')
@@ -440,7 +440,7 @@ class NewCommentPage(BlogHandler):
             try:
                 post = Post.get_by_id(int(post_id))
             except ValueError:
-                self.redirect('/blog')
+                return self.redirect('/blog')
 
         if content:
             comment = Comment(user=self.user, post=post, content=content)
@@ -449,7 +449,7 @@ class NewCommentPage(BlogHandler):
             # Delay for DB processing.
             time.sleep(0.1)
 
-            self.redirect('/blog/%s' % post.key().id())
+            return self.redirect('/blog/%s' % post.key().id())
         else:
             error = 'Comment is needed'
             self.render('permalink.html', post=post, error=error)
@@ -467,12 +467,12 @@ class EditCommentPage(BlogHandler):
             comment_id (str): Comment's id to edit.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         comment = Comment.get_by_id(int(comment_id))
 
         if not(comment and self.user.key().id() == comment.user.key().id()):
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
         content = self.request.get('content-%s' % comment_id)
 
@@ -483,9 +483,9 @@ class EditCommentPage(BlogHandler):
             # Delay for DB processing.
             time.sleep(0.1)
 
-            self.redirect('/blog/%s' % comment.post.key().id())
+            return self.redirect('/blog/%s' % comment.post.key().id())
         else:
-            self.redirect('/blog/%s' % comment.post.key().id())
+            return self.redirect('/blog/%s' % comment.post.key().id())
 
 
 class DeleteCommentPage(BlogHandler):
@@ -500,7 +500,7 @@ class DeleteCommentPage(BlogHandler):
             comment_id (str): Comment's id to edit.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         comment = Comment.get_by_id(int(comment_id))
 
@@ -510,7 +510,7 @@ class DeleteCommentPage(BlogHandler):
             # Delay for DB processing.
             time.sleep(0.1)
 
-        self.redirect('/blog/%s' % comment.post.key().id())
+        return self.redirect('/blog/%s' % comment.post.key().id())
 
 class LikePostPage(BlogHandler):
     """My post page handler.
@@ -519,7 +519,7 @@ class LikePostPage(BlogHandler):
         """Get logged in user posts from DB and render it.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         per_page = 5
         page = self.request.get('page')
@@ -548,7 +548,7 @@ class MyPostPage(BlogHandler):
         """Get logged in user posts from DB and render it.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         per_page = 5
         page = self.request.get('page')
@@ -582,22 +582,22 @@ class LikePage(BlogHandler):
             post_id (str): Post's id to like.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         post = Post.get_by_id(int(post_id))
 
         if not(post and self.user.key().id() != post.user.key().id()):
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
         if self.user.likes.filter('post = ', post).get():
-            self.redirect('/blog/%s' % post.key().id())
+            return self.redirect('/blog/%s' % post.key().id())
 
         Like(user=self.user, post=post).put()
 
         # Delay for DB processing.
         time.sleep(0.1)
 
-        self.redirect('/blog/%s' % post.key().id())
+        return self.redirect('/blog/%s' % post.key().id())
 
 class UnlikePage(BlogHandler):
     """ Blog unlike page handler.
@@ -609,12 +609,12 @@ class UnlikePage(BlogHandler):
             post_id (str): Post's id to unlike.
         """
         if self.user is None:
-            self.redirect('/blog/login')
+            return self.redirect('/blog/login')
 
         post = Post.get_by_id(int(post_id))
 
         if not(post and self.user.key().id() != post.user.key().id()):
-            self.redirect('/blog')
+            return self.redirect('/blog')
 
         like = self.user.likes.filter('post = ', post).get()
 
@@ -624,7 +624,7 @@ class UnlikePage(BlogHandler):
             # Delay for DB processing.
             time.sleep(0.1)
 
-        self.redirect('/blog/%s' % post.key().id())
+        return self.redirect('/blog/%s' % post.key().id())
 
 
 class MainPage(BlogHandler):
