@@ -129,15 +129,6 @@ class BlogHandler(webapp2.RequestHandler):
             self.user = None
 
 
-class AboutPage(BlogHandler):
-    """About page handler.
-    """
-    def get(self):
-        """Render about page.
-        """
-        self.render('about.html')
-
-
 USERNAME_RE = re.compile(r'^[a-zA-Z ]{3,20}$')
 def valid_username(username):
     """Check validity of username.
@@ -672,7 +663,6 @@ class MainPage(BlogHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/blog/about/?', AboutPage),
     ('/blog/signup/?', RegisterPage),
     ('/blog/login/?', LoginPage),
     ('/blog/logout/?', LogoutPage),
