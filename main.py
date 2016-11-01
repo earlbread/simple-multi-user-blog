@@ -602,7 +602,8 @@ class LikePostListPage(BlogHandler):
         if nr_posts % per_page:
             total_page += 1
 
-        posts = [l.post for l in likes.fetch(limit=per_page, offset=page - 1)]
+        offset = per_page * (page - 1)
+        posts = [l.post for l in likes.fetch(limit=per_page, offset=offset)]
 
         self.render('likeposts.html', posts=posts, page=page,
                     total_page=total_page)
@@ -633,7 +634,8 @@ class MyPostListPage(BlogHandler):
         if nr_posts % per_page:
             total_page += 1
 
-        posts = my_posts.fetch(limit=per_page, offset=page - 1)
+        offset = per_page * (page - 1)
+        posts = my_posts.fetch(limit=per_page, offset=offset)
 
         self.render('main.html', posts=posts, page=page,
                     total_page=total_page)
@@ -660,7 +662,8 @@ class MainPage(BlogHandler):
         if nr_posts % per_page:
             total_page += 1
 
-        posts = posts_all.fetch(limit=per_page, offset=page - 1)
+        offset = per_page * (page - 1)
+        posts = posts_all.fetch(limit=per_page, offset=offset)
 
         self.render('main.html', posts=posts, page=page,
                     total_page=total_page)
