@@ -1,8 +1,8 @@
 """This module models blog like post information.
 """
 from google.appengine.ext import db
-from user import User
-from post import Post
+from models.user import User
+from models.post import Post
 
 class Like(db.Model):
     """DB Model for Like Entity.

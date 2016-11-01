@@ -2,8 +2,8 @@
 """
 from google.appengine.ext import db
 import render
-from user import User
-from post import Post
+from models.user import User
+from models.post import Post
 
 class Comment(db.Model):
     """DB Model for Comment Entity.
