@@ -8,18 +8,18 @@ from models.like import Like
 
 from handlers.blog import BlogHandler
 
+from helper import login_required
+
 class LikePage(BlogHandler):
     """ Blog like page handler.
     """
+    @login_required
     def post(self, post_id):
         """Like post.
 
         Args:
             post_id (str): Post's id to like.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         post = Post.get_by_id(int(post_id))
 
         if not(post and self.user.key().id() != post.user.key().id()):
@@ -38,15 +38,13 @@ class LikePage(BlogHandler):
 class UnlikePage(BlogHandler):
     """ Blog unlike page handler.
     """
+    @login_required
     def post(self, post_id):
         """Unlike post.
 
         Args:
             post_id (str): Post's id to unlike.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         post = Post.get_by_id(int(post_id))
 
         if not(post and self.user.key().id() != post.user.key().id()):

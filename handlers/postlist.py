@@ -1,9 +1,8 @@
 """Handlers for post list.
 """
 from models.post import Post
-
 from handlers.blog import BlogHandler
-
+from helper import login_required
 
 class PostPage(BlogHandler):
     """Post handler.
@@ -25,12 +24,10 @@ class PostPage(BlogHandler):
 class LikePostListPage(BlogHandler):
     """My post page handler.
     """
+    @login_required
     def get(self):
         """Get logged in user posts from DB and render it.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         per_page = 5
         page = self.request.get('page')
 
@@ -56,12 +53,10 @@ class LikePostListPage(BlogHandler):
 class MyPostListPage(BlogHandler):
     """My post page handler.
     """
+    @login_required
     def get(self):
         """Get logged in user posts from DB and render it.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         per_page = 5
         page = self.request.get('page')
 

@@ -9,6 +9,8 @@ from models.like import Like
 
 from handlers.blog import BlogHandler
 
+from helper import login_required
+
 class NewPostPage(BlogHandler):
     """New post page handler.
     """
@@ -22,24 +24,20 @@ class NewPostPage(BlogHandler):
         self.render('newpost.html', subject=subject, content=content,
                     error=error)
 
+    @login_required
     def get(self):
         """Render new post page.
 
         If logged out user attempt to access, redirect to login page.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         self.render_front()
 
+    @login_required
     def post(self):
         """Check if subject and content are not empty and register it.
 
         If subject or content is empty, render new post page with error.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         subject = self.request.get('subject')
         content = self.request.get('content')
 
@@ -60,6 +58,7 @@ class NewPostPage(BlogHandler):
 class EditPostPage(BlogHandler):
     """Edit post page handler.
     """
+    @login_required
     def get(self, post_id):
         """Render post page if given post_id exists.
 
@@ -68,9 +67,6 @@ class EditPostPage(BlogHandler):
         Args:
             post_id (str): Post's id.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         post = Post.get_by_id(int(post_id))
 
         if post and self.user.key().id() == post.user.key().id():
@@ -79,6 +75,7 @@ class EditPostPage(BlogHandler):
         else:
             return self.redirect('/blog')
 
+    @login_required
     def post(self, post_id):
         """Check if subject and content are not empty and register it.
 
@@ -88,9 +85,6 @@ class EditPostPage(BlogHandler):
         Args:
             post_id (str): Post's id to edit.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         post = Post.get_by_id(int(post_id))
 
         if not(post and self.user.key().id() == post.user.key().id()):
@@ -120,6 +114,7 @@ class EditPostPage(BlogHandler):
 class DeletePostPage(BlogHandler):
     """Delete post page handler
     """
+    @login_required
     def post(self, post_id):
         """Delete post if given post_id exists.
 
@@ -128,8 +123,6 @@ class DeletePostPage(BlogHandler):
         Args:
             post_id (str): Post's id to edit.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
         post = Post.get_by_id(int(post_id))
 
         if post and self.user.key().id() == post.user.key().id():

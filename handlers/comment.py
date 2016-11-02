@@ -7,17 +7,17 @@ from models.comment import Comment
 
 from handlers.blog import BlogHandler
 
+from helper import login_required
+
 class NewCommentPage(BlogHandler):
     """New comment page handler
     """
+    @login_required
     def post(self):
         """Check if content is not empty and register it.
 
         If content is empty, render post page with error.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         content = self.request.get('content')
         post_id = self.request.get('post_id')
 
@@ -43,6 +43,7 @@ class NewCommentPage(BlogHandler):
 class EditCommentPage(BlogHandler):
     """Edit comment page handler.
     """
+    @login_required
     def post(self, comment_id):
         """Edit comment. If content is empty, just return.
 
@@ -51,9 +52,6 @@ class EditCommentPage(BlogHandler):
         Args:
             comment_id (str): Comment's id to edit.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         comment = Comment.get_by_id(int(comment_id))
 
         if not(comment and self.user.key().id() == comment.user.key().id()):
@@ -76,6 +74,7 @@ class EditCommentPage(BlogHandler):
 class DeleteCommentPage(BlogHandler):
     """Delete comment page handler
     """
+    @login_required
     def post(self, comment_id):
         """Delete comment if given post_id exists.
 
@@ -84,9 +83,6 @@ class DeleteCommentPage(BlogHandler):
         Args:
             comment_id (str): Comment's id to edit.
         """
-        if self.user is None:
-            return self.redirect('/blog/login')
-
         comment = Comment.get_by_id(int(comment_id))
 
         if comment and self.user.key().id() == comment.user.key().id():
