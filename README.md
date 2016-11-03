@@ -27,7 +27,7 @@ You can change secret key for cookie value by setting SECRET environment variabl
 ### Languages
 
  - HTML / CSS
- - Javascript
+ - JavaScript
  - Python
 
 ### Frameworks
