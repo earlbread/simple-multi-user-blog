@@ -34,7 +34,9 @@ You can change secret key for cookie value by setting SECRET environment variabl
  - [Bootstrap][3]
  - [Google App Engine][4]
  - [Simple Blog Template][5]
+ - [Jinja2][6]
 
 [3]: http://getbootstrap.com/
 [4]: https://cloud.google.com/appengine/docs
 [5]: https://github.com/earlbread/simple-blog-template
+[6]: http://jinja.pocoo.org/docs/dev/
